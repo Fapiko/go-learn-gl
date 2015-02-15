@@ -36,7 +36,10 @@ func main() {
 
 	gl.Init()
 
-	//	for true {
-	//		time.Sleep(100 * time.Millisecond)
-	//	}
+	window.SetInputMode(glfw.StickyKeys, glfw.True)
+
+	for window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose() {
+		window.SwapBuffers()
+		glfw.PollEvents()
+	}
 }
