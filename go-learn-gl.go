@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
-	//	"time"
+	"github.com/go-gl/glh"
 )
 
 func main() {
@@ -34,12 +34,68 @@ func main() {
 
 	window.MakeContextCurrent()
 
-	gl.Init()
+	if gl.Init() != 0 {
+		log.Fatal("Failed to init GL")
+	}
 
 	window.SetInputMode(glfw.StickyKeys, glfw.True)
 
+	// Draw a triangle
+	vertexArray := gl.GenVertexArray()
+	vertexArray.Bind()
+
+	triangleVertices := []float32{
+		-1, -1, 0,
+		1, -1, 0,
+		0, 1, 0,
+	}
+	vertexBuffer := gl.GenBuffer()
+	vertexBuffer.Bind(gl.ARRAY_BUFFER)
+	gl.BufferData(gl.ARRAY_BUFFER, int(glh.Sizeof(gl.FLOAT))*len(triangleVertices), triangleVertices, gl.STATIC_DRAW)
+
+	vertexShaderData := `#version 330 core
+layout(location = 0) in vec3 vertexPosition_modelspace;
+void main(){
+	gl_Position.xyz = vertexPosition_modelspace;
+	gl_Position.w = 1.0;
+ }`
+
+	fragmentShaderData := `#version 330 core
+out vec3 color;
+
+void main(){
+    color = vec3(1,0,0);
+}`
+
+	log.Println(gl.GetError())
+
+	vertexShader := glh.Shader{gl.VERTEX_SHADER, vertexShaderData}
+	fragmentShader := glh.Shader{gl.FRAGMENT_SHADER, fragmentShaderData}
+
+	program := glh.NewProgram(vertexShader, fragmentShader)
+	program.Use()
+
 	for window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose() {
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+
+		var vertexAttrib gl.AttribLocation = 0
+		vertexAttrib.EnableArray()
+		vertexBuffer.Bind(gl.ARRAY_BUFFER)
+
+		vertexAttrib.AttribPointer(
+			3,
+			gl.FLOAT,
+			false,
+			0,
+			nil)
+
+		gl.DrawArrays(gl.TRIANGLES, 0, 3)
+
+		vertexAttrib.DisableArray()
+
 		window.SwapBuffers()
 		glfw.PollEvents()
+
+		//		log.Println(gl.GetError())
 	}
 }
