@@ -18,7 +18,7 @@ import (
 )
 
 // Tutorial 05 - A textured cube ported from
-// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
+// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/
 func main() {
 
 	if err := glfw.Init(); err != nil {

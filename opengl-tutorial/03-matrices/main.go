@@ -13,7 +13,7 @@ import (
 )
 
 // Tutorial 03 - Matrices ported from
-// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
+// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
 func main() {
 
 	if err := glfw.Init(); err != nil {

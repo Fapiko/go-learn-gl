@@ -13,7 +13,7 @@ import (
 )
 
 // Tutorial 04 - A colored cube ported from
-// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
+// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-4-a-colored-cube/
 func main() {
 
 	if err := glfw.Init(); err != nil {
