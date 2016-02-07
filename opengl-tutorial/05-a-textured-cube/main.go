@@ -17,7 +17,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-// Tutorial 04 - A colored cube ported from
+// Tutorial 05 - A textured cube ported from
 // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 func main() {
 
@@ -34,7 +34,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
 	// Open a window and create its OpenGL context
-	window, err := glfw.CreateWindow(1024, 768, "Tutorial 04", nil, nil)
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 05", nil, nil)
 	if err != nil {
 		panic(err)
 	}
