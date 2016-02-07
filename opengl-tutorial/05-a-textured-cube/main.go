@@ -166,7 +166,8 @@ func main() {
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertexBufferData)*4, gl.Ptr(vertexBufferData), gl.STATIC_DRAW)
 	defer gl.DeleteBuffers(1, &vertexBuffer)
 
-	_, err = loadBmpCustom("uvtemplate.bmp")
+	//_, err = loadBmpCustom("uvtemplate.bmp")
+	_, err = loadBmpCustom("uvtemplate_numbered.bmp")
 	if err != nil {
 		panic(err)
 	}
