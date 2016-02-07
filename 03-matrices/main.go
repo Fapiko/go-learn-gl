@@ -9,9 +9,10 @@ import (
 
 	"github.com/go-gl/gl/all-core/gl"
 	"github.com/go-gl/glfw3/v3.1/glfw"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
-// Tutorial 02 - The first triangle ported from
+// Tutorial 03 - Matrices ported from
 // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 func main() {
 
@@ -28,7 +29,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
 	// Open a window and create its OpenGL context
-	window, err := glfw.CreateWindow(1024, 768, "Tutorial 02", nil, nil)
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 03", nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -48,8 +49,24 @@ func main() {
 	gl.ClearColor(0.0, 0.0, 0.4, 0.0)
 
 	// Create and compile our GLSL program from the shaders
-	programId := loadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader")
+	programId := loadShaders("SimpleTransform.vertexshader", "SingleColor.fragmentshader")
 	defer gl.DeleteProgram(programId)
+
+	// Get a handle for our "MVP" uniform
+	matrixId := gl.GetUniformLocation(programId, gl.Str("MVP\x00"))
+
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	projection := mgl32.Perspective(45.0, 4.0/3.0, 0.1, 100.0)
+	// Or, for an ortho camera :
+	// projection := mgl32.Ortho(-10.0, 10.0, -10.0, 10.0, 0.0, 100.0) // In world coordinates
+
+	// Camera matrix
+	view := mgl32.LookAt(4.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+
+	// Model matrix : an identity matrix (model will be at the origin)
+	model := mgl32.Ident4()
+
+	mvp := projection.Mul4(view).Mul4(model)
 
 	// Get a handle for our buffers
 	vertexPositionModelspaceId := uint32(gl.GetAttribLocation(programId, gl.Str("vertexPosition_modelspace\x00")))
@@ -59,6 +76,8 @@ func main() {
 		1.0, -1.0, 0.0,
 		0.0, 1.0, 0.0,
 	}
+
+	//elementBufferData := []int{0, 1, 2}
 
 	var vertexBuffer uint32
 	gl.GenBuffers(1, &vertexBuffer)
@@ -73,6 +92,9 @@ func main() {
 
 		// Use our shader
 		gl.UseProgram(programId)
+
+		// Send our transformation to the currently bound shader, in the "MVP" uniform
+		gl.UniformMatrix4fv(matrixId, 1, false, &mvp[0])
 
 		// 1st attribute buffer : vertices
 		gl.EnableVertexAttribArray(vertexPositionModelspaceId)
