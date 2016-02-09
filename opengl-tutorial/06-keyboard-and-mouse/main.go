@@ -26,7 +26,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
 	// Open a window and create its OpenGL context
-	window, err := glfw.CreateWindow(1024, 768, "Tutorial 05", nil, nil)
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 06", nil, nil)
 	if err != nil {
 		panic(err)
 	}
