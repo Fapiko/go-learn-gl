@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"fmt"
+
 	"github.com/fapiko/go-learn-gl/opengl-tutorial/common"
 	"github.com/go-gl/gl/all-core/gl"
 	"github.com/go-gl/glfw3/v3.1/glfw"
@@ -112,7 +114,20 @@ func main() {
 
 	lightId := gl.GetUniformLocation(programId, gl.Str("LightPosition_worldspace\x00"))
 
+	// For speed computation
+	lastTime := glfw.GetTime()
+	var nbFrames int
+
 	for window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose() {
+
+		// Measure speed
+		currentTime := glfw.GetTime()
+		nbFrames++
+		if currentTime-lastTime >= 1 {
+			fmt.Printf("\r%f ms/frame", 1000.0/float64(nbFrames))
+			nbFrames = 0
+			lastTime = currentTime
+		}
 
 		// Clear the screen
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
