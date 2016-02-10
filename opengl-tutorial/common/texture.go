@@ -2,7 +2,6 @@ package common
 
 import (
 	"errors"
-	"log"
 	"os"
 
 	"fmt"
@@ -93,7 +92,7 @@ func LoadBmpCustom(filepath string) (int32, error) {
 
 }
 
-func LoadDDS(imagepath string) (int32, error) {
+func LoadDDS(imagepath string) (uint32, error) {
 
 	// try to open the file
 	file, err := os.Open(imagepath)
@@ -161,8 +160,6 @@ func LoadDDS(imagepath string) (int32, error) {
 
 		size := int32(((width + 3) / 4) * ((height + 3) / 4) * blockSize)
 
-		log.Println(level, len(buffer), offset, size, blockSize)
-		//textureBuffer := buffer[offset : offset+size]
 		gl.CompressedTexImage2D(gl.TEXTURE_2D, level, format, width, height, 0, size, gl.Ptr(&buffer[offset]))
 
 		offset += size
@@ -180,6 +177,6 @@ func LoadDDS(imagepath string) (int32, error) {
 
 	}
 
-	return int32(textureId), nil
+	return textureId, nil
 
 }
