@@ -3,7 +3,7 @@ package common
 import (
 	"math"
 
-	"github.com/go-gl/glfw3/v3.1/glfw"
+	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

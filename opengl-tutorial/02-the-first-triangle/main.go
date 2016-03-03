@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-gl/gl/all-core/gl"
-	"github.com/go-gl/glfw3/v3.1/glfw"
+	"github.com/go-gl/glfw/v3.1/glfw"
 )
 
 // Tutorial 02 - The first triangle ported from
@@ -24,8 +24,8 @@ func main() {
 	glfw.WindowHint(glfw.Samples, 4)
 
 	// Drawing the triangle threw an error with OpenGL 3.3, downgrading to 2.1 seemed to solve it
-	glfw.WindowHint(glfw.ContextVersionMajor, 2)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 
 	// Open a window and create its OpenGL context
 	window, err := glfw.CreateWindow(1024, 768, "Tutorial 02", nil, nil)
@@ -59,6 +59,10 @@ func main() {
 		1.0, -1.0, 0.0,
 		0.0, 1.0, 0.0,
 	}
+
+	var triangleVertexArray uint32
+	gl.GenVertexArrays(1, &triangleVertexArray)
+	gl.BindVertexArray(triangleVertexArray)
 
 	var vertexBuffer uint32
 	gl.GenBuffers(1, &vertexBuffer)
@@ -129,9 +133,10 @@ func loadShaders(vertexFilePath string, fragmentFilePath string) uint32 {
 
 	// Compile Vertex Shader
 	log.Infof("Compiling shader : %s", vertexFilePath)
-	vertexSourcePointer := gl.Str(nullTerminatedString(vertexShaderCode))
+	vertexSourcePointer, freeFunc := gl.Strs(nullTerminatedString(vertexShaderCode))
+	gl.ShaderSource(vertexShaderId, 1, vertexSourcePointer, nil)
+	freeFunc()
 
-	gl.ShaderSource(vertexShaderId, 1, &vertexSourcePointer, nil)
 	gl.CompileShader(vertexShaderId)
 
 	// Check Vertex Shader
@@ -153,9 +158,10 @@ func loadShaders(vertexFilePath string, fragmentFilePath string) uint32 {
 
 	// Compile Fragment Shader
 	log.Infof("Compiling shader : %s", fragmentFilePath)
-	fragmentSourcePointer := gl.Str(nullTerminatedString(fragmentShaderCode))
+	fragmentSourcePointer, freeFunc := gl.Strs(nullTerminatedString(fragmentShaderCode))
+	gl.ShaderSource(fragmentShaderId, 1, fragmentSourcePointer, nil)
+	freeFunc()
 
-	gl.ShaderSource(fragmentShaderId, 1, &fragmentSourcePointer, nil)
 	gl.CompileShader(fragmentShaderId)
 
 	gl.GetShaderiv(fragmentShaderId, gl.COMPILE_STATUS, &result)

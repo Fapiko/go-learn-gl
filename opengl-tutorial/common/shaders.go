@@ -6,7 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/go-gl/gl/all-core/gl"
+	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
 func LoadShaders(vertexFilePath string, fragmentFilePath string) uint32 {
@@ -39,9 +39,10 @@ func LoadShaders(vertexFilePath string, fragmentFilePath string) uint32 {
 
 	// Compile Vertex Shader
 	log.Infof("Compiling shader : %s", vertexFilePath)
-	vertexSourcePointer := gl.Str(nullTerminatedString(vertexShaderCode))
+	vertexSourcePointer, freeFunc := gl.Strs(nullTerminatedString(vertexShaderCode))
+	gl.ShaderSource(vertexShaderId, 1, vertexSourcePointer, nil)
+	freeFunc()
 
-	gl.ShaderSource(vertexShaderId, 1, &vertexSourcePointer, nil)
 	gl.CompileShader(vertexShaderId)
 
 	// Check Vertex Shader
@@ -63,9 +64,10 @@ func LoadShaders(vertexFilePath string, fragmentFilePath string) uint32 {
 
 	// Compile Fragment Shader
 	log.Infof("Compiling shader : %s", fragmentFilePath)
-	fragmentSourcePointer := gl.Str(nullTerminatedString(fragmentShaderCode))
+	fragmentSourcePointer, freeFunc := gl.Strs(nullTerminatedString(fragmentShaderCode))
+	gl.ShaderSource(fragmentShaderId, 1, fragmentSourcePointer, nil)
+	freeFunc()
 
-	gl.ShaderSource(fragmentShaderId, 1, &fragmentSourcePointer, nil)
 	gl.CompileShader(fragmentShaderId)
 
 	gl.GetShaderiv(fragmentShaderId, gl.COMPILE_STATUS, &result)

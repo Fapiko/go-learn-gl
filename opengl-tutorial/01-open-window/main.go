@@ -1,10 +1,30 @@
 package main
 
-import "github.com/go-gl/glfw3/v3.1/glfw"
+import (
+	"runtime"
+	"sync"
+
+	"github.com/go-gl/glfw/v3.1/glfw"
+)
 
 // Tutorial 01 - Creating a Window ported from
 // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
 func main() {
+
+	waitGroup := &sync.WaitGroup{}
+	waitGroup.Add(1)
+
+	// OpenGL needs to be locked to a thread, so make a goroutine that calls runtime.LockOSThread()
+	go renderThread(waitGroup)
+
+	waitGroup.Wait()
+
+}
+
+func renderThread(waitGroup *sync.WaitGroup) {
+
+	defer waitGroup.Done()
+	runtime.LockOSThread()
 
 	err := glfw.Init()
 	if err != nil {
